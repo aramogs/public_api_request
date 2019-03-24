@@ -70,7 +70,7 @@ $.ajax({
     </form>`);
     $('.search-container').append($form);
     $('#search-input').keyup(function (e) {
-        let search = document.querySelector('#search-input').value;
+        let search = document.querySelector('#search-input').value.toLowerCase();
         let names = document.querySelectorAll('.card-name');
         for (let i = 0; i < names.length; i++) {
             let itemName = names[i].textContent;
