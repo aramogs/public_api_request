@@ -1,7 +1,11 @@
+//////////////////////////////////////////////////////
+//Ajax Request: Requesting 12 results in json format from API
+/////////////////////////////////////////////////////
 $.ajax({
     url: 'https://randomuser.me/api/?results=12',
     dataType: 'json'
 }).done(function (user) {
+    //Preparing each card with the current information from user.results[i]
     $.each(user.results, function (i) {
         $card = $(`<div class="card">
     <div class="card-img-container">
@@ -15,13 +19,20 @@ $.ajax({
     </div>`);
         $('#gallery').append($card);
     });
+//////////////////////////////////////////////////////
+//EventListener:When card class is clicked then append modal-container
+/////////////////////////////////////////////////////
     $('.card').on('click', function (e) {
         e.preventDefault();
         result = user.results[$(this).index()];
         currentIndex = $(this).index();
         modal(result);
     });
+//////////////////////////////////////////////////////
+//Function Modal: When called the modal function inserts the modal-container with the respective information
+/////////////////////////////////////////////////////    
     function modal(result) {
+        //Converting the dob.date to 01/01/1900
         let birthday = new Date(result.dob.date).toLocaleDateString('en-US');
         $modal = $(`<div class="modal-container">
                 <div class="modal">
@@ -44,6 +55,8 @@ $.ajax({
                 </div>`);
         $('.modal-container').remove();
         $('body').append($modal);
+        //If prev button is clicked, then change the information displayed,
+        //This is done by changing the currentIndex--
         $('#modal-prev').on('click', function () {
             currentIndex--;
             if (currentIndex < 0) {
@@ -52,6 +65,8 @@ $.ajax({
             result = user.results[currentIndex];
             modal(result)
         });
+        //If next button is clicked, then change the information displayed,
+        //This is done by changing the currentIndex++
         $('#modal-next').on('click', function () {
             currentIndex++;
             if (currentIndex > document.querySelectorAll('.card').length - 1) {
@@ -60,23 +75,35 @@ $.ajax({
             result = user.results[currentIndex];
             modal(result)
         });
+        //If the close button is clicked, the modal-container is removed
         $('#modal-close-btn').on('click', function (e) {
             $('.modal-container').remove();
         });
     }
+//////////////////////////////////////////////////////
+//Search: Adding the search option dinamically
+/////////////////////////////////////////////////////   
     $form = $(`<form action="#" method="get">
     <input type="search" id="search-input" class="search-input" placeholder="Search...">
     <input type="submit" value="&#x1F50D;" id="serach-submit" class="search-submit">
     </form>`);
     $('.search-container').append($form);
-    $('#search-input').keyup(function (e) {
+    //Adding eventlistener to search input
+    $('#search-input').keyup(function () {
+        //Getting the text from the searched word and converting it to lowercase
         let search = document.querySelector('#search-input').value.toLowerCase();
+        //Getting all the classes named card-name
         let names = document.querySelectorAll('.card-name');
+        //Looping the names classes
         for (let i = 0; i < names.length; i++) {
+            //Getting the textcontent of card-name classes
             let itemName = names[i].textContent;
+            //searching the value of the input with the current text of card-name
             let index = itemName.toLowerCase().indexOf(search);
+            //If the text matches then change style.display to flex
             if (index != -1) {
                 names[i].parentElement.parentElement.style.display = "flex";
+            //else change style.display to none
             } else {
                 names[i].parentElement.parentElement.style.display = "none";
             }
